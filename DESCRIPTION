@@ -1,0 +1,26 @@
+Package: straumforbruk
+Type: Package
+Title: Ymse funksjonar for vising av straumforbruk og -prisar
+Version: 0.1.0
+Author: Per Erik Haugedal
+Maintainer: Per Erik Haugedal <pehaugedal@gmail.com>
+Description: Ymse funksjonar for vising av straumforbruk og -prisar, til dømes for å rekna ut nettleige.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    lubridate,
+    base64enc,
+    jsonlite,
+    glue,
+    ghql,
+    magrittr,
+    tibble,
+    dplyr
+RdMacros: Rdpack
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
