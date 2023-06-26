@@ -1,3 +1,7 @@
+#' @importFrom lubridate year month
+#' @importFrom dplyr group_by case_when last mutate ungroup
+#' @importFrom tibble add_row
+NULL
 #' Straumstøtte
 #'
 #' @param d_forbruk
