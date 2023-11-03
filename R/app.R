@@ -245,6 +245,8 @@ server = function(input, output) {
       geom_step() +
       geom_step(aes(x = from, y = stotte), color = "limegreen") +
       geom_step(aes(x = from, y = stotte_time), color = "purple", linetype = "dotted") +
+      geom_step(aes(x = from, y = sum - stotte_time), color = "blue", linetype = "dotted") +
+      geom_line(aes(x = from, y = stotte_kum), color = "orange3", linetype = "dashed") +
       scale_y_continuous(limits = c(0, NA)) +
       scale_x_datetime(
         labels = scales::date_format("%H:%M", tz = tidssone),
@@ -313,6 +315,8 @@ server = function(input, output) {
       geom_step() +
       geom_step(aes(x = from, y = stotte), color = "limegreen") +
       geom_step(aes(x = from, y = stotte_time), color = "purple", linetype = "dotted") +
+      geom_step(aes(x = from, y = sum - stotte_time), color = "blue", linetype = "dotted") +
+      geom_line(aes(x = from, y = stotte_kum), color = "orange3", linetype = "dashed") +
       scale_y_continuous(limits = c(0, NA)) +
       scale_x_datetime(
         labels = scales::date_format(
