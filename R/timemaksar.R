@@ -12,7 +12,7 @@ lag_timemaks_tabell = function(d_forbruk) {
   nummer = rep(1:3, n_distinct(d_forbruk$aar_mnd))
 
   if (mnd_dag %in% c(1:2)) {
-    nummer = head(nummer, - (3 - mnd_dag))
+    nummer = head(nummer, -(3 - mnd_dag))
   }
 
   d_timesmaksar = d_forbruk %>%

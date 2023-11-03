@@ -58,17 +58,17 @@ legg_til_straumstotte = function(d_forbruk) {
 #' @examples
 legg_til_kostnadsinfo = function(d_forbruk) {
   d_forbruk %>%
-      group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
-      mutate(
-        nettleige = nettleige(from),
-        pris_faktisk = if_else(from <= ym("23-09"),
-          total + nettleige - stotte,
-          total + nettleige - stotte_time
-          ),
-        kostnad_faktisk = consumption * pris_faktisk,
-        snitt_mnd = mean(pris_faktisk)
-      ) %>%
-      ungroup()
+    group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
+    mutate(
+      nettleige = nettleige(from),
+      pris_faktisk = if_else(from <= ym("23-09"),
+        total + nettleige - stotte,
+        total + nettleige - stotte_time
+      ),
+      kostnad_faktisk = consumption * pris_faktisk,
+      snitt_mnd = mean(pris_faktisk)
+    ) %>%
+    ungroup()
 }
 
 #' Nettleige
@@ -111,7 +111,6 @@ nettleige = function(tidspunkt) {
     # Kveld/helg f.o.m. juli 2023
     year(tidspunkt) == 2023 & month(tidspunkt) >= 7 & !dagtid(tidspunkt) ~
       0.4393
-
   )
 }
 
