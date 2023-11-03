@@ -16,7 +16,7 @@ legg_til_straumstotte = function(d_forbruk) {
         year(from) == 2022 | year(from) == 2023 & month(from) <= 3 ~ (energy - 0.7) * 0.9 * 1.25,
         # 80 % stønad frå og med april 2023 til og med august 2023
         year(from) == 2023 & month(from) <= 8 ~ (energy - 0.7),
-        # 90 % stønad
+        # 90 % stønad frå og med september 2023
         year(from) >= 2023 ~ (energy - 0.7) * 0.9 * 1.25
       ),
     ) %>%
@@ -29,8 +29,8 @@ legg_til_straumstotte = function(d_forbruk) {
         year(from) == 2022 | year(from) == 2023 & month(from) <= 3 ~ (mean(energy) - 0.7) * 0.9 * 1.25,
         # 80 % stønad frå og med april 2023 til og med august 2023
         year(from) == 2023 & month(from) <= 8 ~ (mean(energy) - 0.7),
-        # 90 % stønad
-        year(from) >= 2023 ~ (mean(energy) - 0.7) * 0.9 * 1.25
+        # Timestønad frå og med september 2023
+        from > ym("23-09") ~ NA_real_
       ),
       stotte_kum = case_when(
         # 80 % stønad over 70 øre før august 2022
@@ -39,8 +39,8 @@ legg_til_straumstotte = function(d_forbruk) {
         year(from) == 2022 | year(from) == 2023 & month(from) <= 3 ~ (cummean(energy) - 0.7) * 0.9 * 1.25,
         # 80 % stønad frå og med april 2023 til og med august 2023
         year(from) == 2023 & month(from) <= 8 ~ (cummean(energy) - 0.7),
-        # 90 % stønad
-        year(from) >= 2023 ~ (cummean(energy) - 0.7) * 0.9 * 1.25
+        # Timestønad frå og med september 2023
+        from > ym("23-09") ~ NA_real_
       ),
       stotte = pmax(stotte, 0),
       stotte_time = pmax(stotte_time, 0),
@@ -61,7 +61,10 @@ legg_til_kostnadsinfo = function(d_forbruk) {
       group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
       mutate(
         nettleige = nettleige(from),
-        pris_faktisk = total + nettleige - stotte,
+        pris_faktisk = if_else(from <= ym("23-09"),
+          total + nettleige - stotte,
+          total + nettleige - stotte_time
+          ),
         kostnad_faktisk = consumption * pris_faktisk,
         snitt_mnd = mean(pris_faktisk)
       ) %>%
@@ -108,6 +111,7 @@ nettleige = function(tidspunkt) {
     # Kveld/helg f.o.m. juli 2023
     year(tidspunkt) == 2023 & month(tidspunkt) >= 7 & !dagtid(tidspunkt) ~
       0.4393
+
   )
 }
 
