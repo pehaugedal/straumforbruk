@@ -1,11 +1,3 @@
-#' @importFrom lubridate year today
-#' @importFrom ghql GraphqlClient Query
-#' @importFrom magrittr %>%
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr rename full_join arrange
-NULL
-
-
 #' Last ned data frå Tibber
 #'
 #' @return
