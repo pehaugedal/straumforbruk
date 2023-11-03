@@ -6,7 +6,7 @@ library(gt)
 library(patchwork)
 library(shinyWidgets)
 
-Sys.setlocale (category = "LC_ALL", locale = "nn_NO.UTF-8")
+Sys.setlocale(category = "LC_ALL", locale = "nn_NO.UTF-8")
 tidssone = "Europe/Oslo"
 mnd_no = month(now(tzone = tidssone))
 forste_denne_mnd = floor_date(now(tzone = tidssone), "month")
@@ -164,11 +164,13 @@ server = function(input, output) {
     ggplot(d_forbruk, aes(x = mnd, y = pris_faktisk)) +
       geom_boxplot() +
       geom_point(aes(y = stotte, colour = "Stønad"),
-                 size = 4,
-                 shape = 4) +
+        size = 4,
+        shape = 4
+      ) +
       geom_point(aes(y = snitt_mnd, colour = "Gjennomsnitt"),
-                 size = 4,
-                 shape = 4) +
+        size = 4,
+        shape = 4
+      ) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_manual(values = fargar) +
       theme(
@@ -186,8 +188,10 @@ server = function(input, output) {
     ggplot(d_forbruk, aes(x = mnd, y = kostnad_faktisk)) +
       geom_boxplot() +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      theme(panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank()) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()
+      ) +
       ggtitle("Faktiske kostnadar per time (spotpris + nettleige - stønad)") +
       xlab(NULL) +
       ylab("Kostnad (kr/time)") +
@@ -229,7 +233,8 @@ server = function(input, output) {
         panel.grid.minor.x = element_blank()
       ) +
       ggtitle("Differanse forbruksvekta snittpris og snittspotpris",
-              subtitle = "Har eg brukt meir straum billige timar enn dyre?") +
+        subtitle = "Har eg brukt meir straum billige timar enn dyre?"
+      ) +
       xlab(NULL) +
       ylab("Differanse (kr)") +
       theme(plot.title = element_text(size = 20))
@@ -245,10 +250,14 @@ server = function(input, output) {
         labels = scales::date_format("%H:%M", tz = tidssone),
         breaks = scales::breaks_pretty(8)
       ) +
-      geom_vline(xintercept = now(tzone = tidssone),
-                 linetype = "dashed") +
-      geom_vline(xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
-                 linetype = 1) +
+      geom_vline(
+        xintercept = now(tzone = tidssone),
+        linetype = "dashed"
+      ) +
+      geom_vline(
+        xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
+        linetype = 1
+      ) +
       geom_text(
         data = distinct(map_df(head(d_prisar_idag_imorgon, -1), rev), stotte, .keep_all = TRUE),
         aes(
@@ -269,20 +278,26 @@ server = function(input, output) {
       ylab("Pris (kr)") +
       theme(plot.title = element_text(size = 20))
 
-    p_dagens_forbruk = ggplot(head(d_prisar_idag_imorgon, -1),
-                              aes(x = from, y = consumption, fill = pris_faktisk)) +
+    p_dagens_forbruk = ggplot(
+      head(d_prisar_idag_imorgon, -1),
+      aes(x = from, y = consumption, fill = pris_faktisk)
+    ) +
       geom_col(position = position_nudge(60 * 30)) +
       scale_x_datetime(
         labels = scales::date_format("%H:%M", tz = tidssone),
         breaks = scales::breaks_pretty(8)
       ) +
-      theme(panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank()) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()
+      ) +
       xlab(NULL) +
       ylab("Forbruk (kWh)") +
       labs(fill = "Faktisk pris (kr/kWh)") +
-      theme(plot.title = element_text(size = 20),
-            legend.position = c(.95, .75)) +
+      theme(
+        plot.title = element_text(size = 20),
+        legend.position = c(.95, .75)
+      ) +
       scale_fill_gradient2(
         low = "limegreen",
         mid = "grey98",
@@ -307,10 +322,14 @@ server = function(input, output) {
         ),
         breaks = scales::breaks_pretty(10)
       ) +
-      geom_vline(xintercept = now(tzone = tidssone),
-                 linetype = "dashed") +
-      geom_vline(xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
-                 linetype = 1) +
+      geom_vline(
+        xintercept = now(tzone = tidssone),
+        linetype = "dashed"
+      ) +
+      geom_vline(
+        xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
+        linetype = 1
+      ) +
       geom_text(
         data = distinct(map_df(d_prisar_siste_veke, rev), stotte, .keep_all = TRUE),
         aes(
@@ -332,8 +351,10 @@ server = function(input, output) {
       ylab("Pris (kr)") +
       theme(plot.title = element_text(size = 20))
 
-    p_vekas_forbruk = ggplot(d_prisar_siste_veke,
-                             aes(x = from, y = consumption, fill = pris_faktisk)) +
+    p_vekas_forbruk = ggplot(
+      d_prisar_siste_veke,
+      aes(x = from, y = consumption, fill = pris_faktisk)
+    ) +
       geom_col(position = position_nudge(60 * 30)) +
       scale_x_datetime(
         labels = scales::date_format(
@@ -343,13 +364,17 @@ server = function(input, output) {
         ),
         breaks = scales::breaks_pretty(10)
       ) +
-      theme(panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank()) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()
+      ) +
       xlab(NULL) +
       ylab("Forbruk (kWh)") +
       labs(fill = "Faktisk pris (kr/kWh)") +
-      theme(plot.title = element_text(size = 20),
-            legend.position = c(.95, .75)) +
+      theme(
+        plot.title = element_text(size = 20),
+        legend.position = c(.95, .75)
+      ) +
       scale_fill_gradient2(
         low = "limegreen",
         mid = "grey98",
@@ -361,7 +386,8 @@ server = function(input, output) {
   })
 
   output$prisar_denne_mnd = renderPlot({
-    d_forbruk_mnd = filter(d_forbruk_prisgraf,
+    d_forbruk_mnd = filter(
+      d_forbruk_prisgraf,
       from >= input$mnd_prisar,
       from < ceiling_date(input$mnd_prisar, "month")
     )
@@ -381,10 +407,14 @@ server = function(input, output) {
         ),
         breaks = scales::breaks_pretty(10)
       ) +
-      geom_vline(xintercept = now(tzone = tidssone),
-                 linetype = "dashed") +
-      geom_vline(xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
-                 linetype = 1) +
+      geom_vline(
+        xintercept = now(tzone = tidssone),
+        linetype = "dashed"
+      ) +
+      geom_vline(
+        xintercept = as_datetime(paste0(today(tzone = tidssone) + 1), tz = tidssone),
+        linetype = 1
+      ) +
       geom_text(
         data = distinct(map_df(d_forbruk_mnd, rev), stotte, .keep_all = TRUE),
         aes(
@@ -407,7 +437,8 @@ server = function(input, output) {
       theme(plot.title = element_text(size = 20))
 
     p_vekas_forbruk = ggplot(d_forbruk_mnd,
-                             aes(x = from, y = consumption, fill = pris_faktisk)) +
+      mapping = aes(x = from, y = consumption, fill = pris_faktisk)
+    ) +
       geom_col(position = position_nudge(60 * 30)) +
       scale_x_datetime(
         labels = scales::date_format(
@@ -417,13 +448,17 @@ server = function(input, output) {
         ),
         breaks = scales::breaks_pretty(10)
       ) +
-      theme(panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank()) +
+      theme(
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()
+      ) +
       xlab(NULL) +
       ylab("Forbruk (kWh)") +
       labs(fill = "Faktisk pris (kr/kWh)") +
-      theme(plot.title = element_text(size = 20),
-            legend.position = c(.95, .75)) +
+      theme(
+        plot.title = element_text(size = 20),
+        legend.position = c(.95, .75)
+      ) +
       scale_fill_gradient2(
         low = "limegreen",
         mid = "grey98",
