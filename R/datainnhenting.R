@@ -94,33 +94,33 @@ les_data_tibber = function() {
   q_prisar = con$exec(qry_pris$queries$hent_prisar)
 
   d_p = jsonlite::fromJSON(q_prisar)
-  d_prisar_historisk = d_p$data$viewer$homes$currentSubscription$priceInfo$range$nodes[[1]] %>%
+  d_prisar_historisk = d_p$data$viewer$homes$currentSubscription$priceInfo$range$nodes[[1]] |>
     as_tibble()
-  d_prisar_idag = d_p$data$viewer$homes$currentSubscription$priceInfo$today[[1]] %>%
+  d_prisar_idag = d_p$data$viewer$homes$currentSubscription$priceInfo$today[[1]] |>
     as_tibble()
-  d_prisar_imorgon = d_p$data$viewer$homes$currentSubscription$priceInfo$tomorrow[[1]] %>%
+  d_prisar_imorgon = d_p$data$viewer$homes$currentSubscription$priceInfo$tomorrow[[1]] |>
     as_tibble()
-  # d_prisar_timar = d_p$data$viewer$homes$currentSubscription$priceRating$hourly$entries[[1]] %>%
-  #   as_tibble() %>%
+  # d_prisar_timar = d_p$data$viewer$homes$currentSubscription$priceRating$hourly$entries[[1]] |>
+  #   as_tibble() |>
   #   rename(startsAt = time)
-  d_prisar = d_prisar_historisk %>%
+  d_prisar = d_prisar_historisk |>
     full_join(d_prisar_idag)
 
   if (nrow(d_prisar_imorgon) != 0) {
-    d_prisar = d_prisar %>%
+    d_prisar = d_prisar |>
       rbind(d_prisar_imorgon)
   } else {
-    # d_prisar = d_prisar %>%
+    # d_prisar = d_prisar |>
     #   full_join(select(d_prisar_timar, -level))
   }
 
-  d_prisar = d_prisar %>%
+  d_prisar = d_prisar |>
     rename(from = startsAt)
 
-  jsonlite::fromJSON(q_forbruk)$data$viewer$homes$consumption$nodes[[1]] %>%
-    as_tibble() %>%
-    full_join(d_prisar, by = "from") %>%
-    arrange(from) %>%
+  jsonlite::fromJSON(q_forbruk)$data$viewer$homes$consumption$nodes[[1]] |>
+    as_tibble() |>
+    full_join(d_prisar, by = "from") |>
+    arrange(from) |>
     mutate(
       from = as_datetime(from, tz = tidssone),
       to = as_datetime(to, tz = tidssone),

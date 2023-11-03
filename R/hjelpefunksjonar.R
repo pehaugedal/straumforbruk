@@ -7,7 +7,7 @@
 #'
 #' @examples
 legg_til_straumstotte = function(d_forbruk) {
-  d_forbruk %>%
+  d_forbruk |>
     mutate(
       stotte_time = case_when(
         # 80 % stønad over 70 øre før august 2022
@@ -19,8 +19,8 @@ legg_til_straumstotte = function(d_forbruk) {
         # 90 % stønad frå og med september 2023
         year(from) >= 2023 ~ (energy - 0.7) * 0.9 * 1.25
       ),
-    ) %>%
-    group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
+    ) |>
+    group_by(aar_mnd = lubridate::floor_date(from, "month")) |>
     mutate(
       stotte = case_when(
         # 80 % stønad over 70 øre før august 2022
@@ -44,7 +44,7 @@ legg_til_straumstotte = function(d_forbruk) {
       ),
       stotte = pmax(stotte, 0),
       stotte_time = pmax(stotte_time, 0),
-    ) %>%
+    ) |>
     ungroup()
 }
 
@@ -57,8 +57,8 @@ legg_til_straumstotte = function(d_forbruk) {
 #'
 #' @examples
 legg_til_kostnadsinfo = function(d_forbruk) {
-  d_forbruk %>%
-    group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
+  d_forbruk |>
+    group_by(aar_mnd = lubridate::floor_date(from, "month")) |>
     mutate(
       nettleige = nettleige(from),
       pris_faktisk = if_else(from <= ym("23-09"),
@@ -67,7 +67,7 @@ legg_til_kostnadsinfo = function(d_forbruk) {
       ),
       kostnad_faktisk = consumption * pris_faktisk,
       snitt_mnd = mean(pris_faktisk)
-    ) %>%
+    ) |>
     ungroup()
 }
 
@@ -175,7 +175,7 @@ weighted_mean = function(x, w, ..., na.rm = FALSE) {
 #'
 #' @examples
 legg_til_ekstra_time = function(d) {
-  d %>%
-    add_row(tail(d, 1)) %>%
+  d |>
+    add_row(tail(d, 1)) |>
     mutate(from = c(from[-n()], last(from) + 60 * 60))
 }

@@ -94,36 +94,36 @@ server = function(input, output) {
   theme_set(ggplot2::theme_light())
   update_geom_defaults("col", list(fill = "#3182bd"))
 
-  d_forbruk = les_data_tibber() %>%
-    legg_til_straumstotte() %>%
+  d_forbruk = les_data_tibber() |>
+    legg_til_straumstotte() |>
     legg_til_kostnadsinfo()
 
-  d_forbruk_snitt = d_forbruk %>%
-    group_by(aar_mnd = lubridate::floor_date(from, "month")) %>%
+  d_forbruk_snitt = d_forbruk |>
+    group_by(aar_mnd = lubridate::floor_date(from, "month")) |>
     summarise(
       spot = mean(total) - 0.01,
       faktisk = weighted_mean(total, w = consumption, na.rm = TRUE) - 0.01,
       differanse = faktisk - spot
     )
 
-  d_forbruk = d_forbruk %>%
+  d_forbruk = d_forbruk |>
     mutate(
       sum = total + nettleige,
       consumption = replace_na(consumption, 0)
     )
 
-  d_forbruk_prisgraf = d_forbruk %>%
+  d_forbruk_prisgraf = d_forbruk |>
     legg_til_ekstra_time()
 
-  d_prisar_siste_veke = d_forbruk_prisgraf %>%
-    filter(date(from) >= today(tzone = tidssone) - 7) %>%
+  d_prisar_siste_veke = d_forbruk_prisgraf |>
+    filter(date(from) >= today(tzone = tidssone) - 7) |>
     mutate(time_lab = as.POSIXct(from, format = "%H:%M"))
 
-  d_prisar_idag_imorgon = d_prisar_siste_veke %>%
+  d_prisar_idag_imorgon = d_prisar_siste_veke |>
     filter(date(from) >= today(tzone = tidssone))
 
   output$straumpris_histogram = renderPlot({
-    d_forbruk_aktuell = d_forbruk %>%
+    d_forbruk_aktuell = d_forbruk |>
       filter(mnd %in% input$mnd)
 
     ggplot(d_forbruk_aktuell, aes(x = pris_faktisk)) +
@@ -142,7 +142,7 @@ server = function(input, output) {
   })
 
   output$spotpris_histogram = renderPlot({
-    d_forbruk_aktuell = d_forbruk %>%
+    d_forbruk_aktuell = d_forbruk |>
       filter(mnd %in% input$mnd)
 
     ggplot(d_forbruk_aktuell, aes(x = unitPrice + nettleige)) +
@@ -199,15 +199,15 @@ server = function(input, output) {
   })
 
   output$del_stotte = renderTable({
-    d_forbruk %>%
-      filter(year(from) == year(input$aar_kostnadar)) %>%
-      group_by(mnd) %>%
+    d_forbruk |>
+      filter(year(from) == year(input$aar_kostnadar)) |>
+      group_by(mnd) |>
       summarise(
         kostnad = sum(kostnad_faktisk, na.rm = TRUE),
         stønad = sum(stotte * consumption, na.rm = TRUE),
         nettleige = sum(nettleige * consumption, na.rm = TRUE)
-      ) %>%
-      janitor::adorn_totals("row") %>%
+      ) |>
+      janitor::adorn_totals("row") |>
       mutate(
         total = kostnad + stønad,
         del_stønad = stønad / (kostnad + stønad),
@@ -216,7 +216,7 @@ server = function(input, output) {
   })
 
   output$snittpris_differanse = renderPlot({
-    d_snittprisdifferanse = d_forbruk_snitt %>%
+    d_snittprisdifferanse = d_forbruk_snitt |>
       filter(year(aar_mnd) == year(input$aar_snittprisdifferanse))
     ggplot(d_snittprisdifferanse, aes(x = aar_mnd, y = differanse, group = TRUE)) +
       geom_line() +
