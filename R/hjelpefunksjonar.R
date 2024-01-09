@@ -17,7 +17,9 @@ legg_til_straumstotte = function(d_forbruk) {
         # 80 % stønad frå og med april 2023 til og med august 2023
         year(from) == 2023 & month(from) <= 8 ~ (energy - 0.7),
         # 90 % stønad frå og med september 2023
-        year(from) >= 2023 ~ (energy - 0.7) * 0.9 * 1.25
+        year(from) == 2023 ~ (energy - 0.7) * 0.9 * 1.25,
+        # 90 % stønad over *73* øre frå og med januar 2024
+        year(from) >= 2024  ~ (energy - 0.73) * 0.9 * 1.25
       ),
     ) |>
     group_by(aar_mnd = lubridate::floor_date(from, "month")) |>
@@ -61,7 +63,7 @@ legg_til_kostnadsinfo = function(d_forbruk) {
     group_by(aar_mnd = lubridate::floor_date(from, "month")) |>
     mutate(
       nettleige = nettleige(from),
-      pris_faktisk = if_else(from <= ym("23-09"),
+      pris_faktisk = if_else(from < ym("23-09"),
         total + nettleige - stotte,
         total + nettleige - stotte_time
       ),
