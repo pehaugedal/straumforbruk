@@ -110,7 +110,19 @@ nettleige = function(tidspunkt) {
       0.5573,
     # Kveld/helg f.o.m. juli 2023
     year(tidspunkt) == 2023 & month(tidspunkt) >= 7 & !dagtid(tidspunkt) ~
-      0.4393
+      0.4393,
+    # Dagtid f.o.m. januar 2024
+    year(tidspunkt) == 2024 & month(tidspunkt) %in% 1:3 & dagtid(tidspunkt) ~
+      0.4782,
+    # Kveld/helg f.o.m. januar 2024
+    year(tidspunkt) == 2024 & month(tidspunkt) %in% 1:3 & !dagtid(tidspunkt) ~
+      0.3602,
+    # Dagtid f.o.m. april 2024
+    year(tidspunkt) == 2024 & month(tidspunkt) >= 4 & dagtid(tidspunkt) ~
+      0.5648,
+    # Kveld/helg f.o.m. april 2024
+    year(tidspunkt) == 2024 & month(tidspunkt) >= 4 & !dagtid(tidspunkt) ~
+      0.4468,
   )
 }
 
