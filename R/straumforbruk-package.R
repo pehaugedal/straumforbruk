@@ -17,6 +17,7 @@
 #' @importFrom lubridate year
 #' @importFrom lubridate ym
 #' @importFrom magrittr %>%
+#' @importFrom purrr map_df
 #' @importFrom tibble add_row
 #' @importFrom tibble as_tibble
 ## usethis namespace: end
